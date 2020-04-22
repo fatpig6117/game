@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Smoke</title>
+</head>
+<body>
+    <h3>Smoke Effect</h3>
+    <button onclick="n001()">001</button>
+    <button onclick="n002()">002</button>
+    <hr/>
+    <canvas id="cvs" width="800" height="800" style="border:1px solid black"></canvas>
+<script src="lib.js"></script>
+<script >
+    let ctx=document.querySelector("#cvs").getContext("2d");
+    ctx.canvas.addEventListener("click", function(e){
+        particles.push(new SmokeSystem(e.offsetX, e.offsetY));
+    });
+    let particles=[];
+    function refresh(){
+        //particles.push(new Smoke(Math.random()*30+385, 620))
+        // 更新資料
+        for(let i=0;i<particles.length;i++){
+            let die=particles[i].update();
+            if(die){
+                particles.splice(i,1);
+                i--;
+            }
+        }
+        // 清空畫面
+         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        // 重畫
+        for(let i=0;i<particles.length;i++){
+            particles[i].render();
+        }
+    }
+    // 先載入圖片 (外部資源)
+    let smokeImage=new Image();
+    smokeImage.src="smoke.png";
+    smokeImage.addEventListener("load", function(){
+        // 載入完成後，才開始遊戲
+        window.setInterval(refresh,10);
+    });
+    function n001(){
+        for(let i=0; i<801; i+=100){
+            particles.push(new SmokeSystem(i,i))
+        }
+        for(let i=800; i>-1; i-=100){
+            particles.push(new SmokeSystem(i,800-i))
+        }
+    }
+    function n002(){
+        for(let i=0; i<Math.random()*5+10; i++){
+            particles.push(new SmokeSystem(Math.random()*800,Math.random()*800))
+        }
+    }
+</script>
+</body>
+</html>
